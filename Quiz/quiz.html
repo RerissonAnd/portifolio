@@ -1,0 +1,229 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+</head>
+
+<style>
+  @font-face {
+    font-family: mlp;
+    src: url(fontes/my-little-pony/PONY\ -\ MLP\ 2\ -\ Version\ Definitiva\ 6\ -\ Kustren.ttf);
+  }
+  @keyframes acertou{
+    0%{background-color: #D38CCF;}
+    50%{background-color: #59cc44;}
+    100%{background-color: #D38CCF;}
+  }
+  @keyframes errou {
+    0%{background-color: #D38CCF;}
+    15%{background-color: #EF4142;}
+    70%{background-color: #EF4142;;}
+    100%{background-color: #D38CCF;}
+  }
+
+  body{
+    background-image: url(imagens/Fundo\ Mlp\ \(2\).jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    font-family: mlp;
+    text-align: center;
+  }
+
+  .list-group {
+    margin-top: 150px;
+  }
+
+  h1 {
+    margin: 45px 0px;
+    font-size: 45px;
+  }
+
+  h3{
+    font-size: 30px;
+  }
+
+  .campo {
+    border: 1px solid black;
+    margin-top: 15px;
+    border-radius: 5px;
+    font-size: 18px;
+    transition-duration: 0.4s;
+    background-color: #D38CCF;
+  }
+
+  .campo:hover {
+    background-color: #9EDBF8;
+  }
+
+  .acertou {
+    animation-name: acertou;
+    animation-duration: 250ms;
+    animation-iteration-count: infinite;
+  }
+
+  .errou {
+    animation-name: errou;
+    animation-duration: 2.5s;
+  }
+
+  .score{
+    display: block;
+    margin: 50px auto;
+    background-color: #D38CCF;
+    border-radius: 3px;
+    width: 200px;
+    font-size: 20px;
+  }
+
+</style>
+
+<body>
+
+  <div class="container">
+    <h1 class="mt-5 titulo">Quiz My Little Pony</h1>
+    <div class="row justify-content-md-center">
+      <h3></h3>
+      <div class="row campo justify-content-md-center"></div>
+      <div class="row campo justify-content-md-center"></div>
+      <div class="row campo justify-content-md-center"></div>
+      <div class="row campo justify-content-md-center"></div>
+    </div>
+    <div class="score">
+      <p>Score: 0</p>
+    </div>
+  </div>
+
+
+</body>
+
+</html>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+  integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
+
+<script type="text/javascript">
+
+  var questoes = [
+    {
+      pergunta: "Qual o elemento da harmonia da AppleJack?",
+      opcoes: ["Elemento da bondade", "Elemento do amor", "Elemento da honestidade", "Elemento da gentileza"],
+      resposta: "Elemento da honestidade"
+    },
+    {
+      pergunta: "Qual a idade da Flutthershy?",
+      opcoes: ["17", "14", "19", "15"],
+      resposta: "19"
+    },
+    {
+      pergunta: "Qual é o nome do bichinho da Twilight Sparkle?",
+      opcoes: ["Owl", "Owlowiscious", "Sir Owl", "Little Owl"],
+      resposta: "Owlowiscious"
+    },
+    {
+      pergunta: "Qual é o primeiro vilão que aparece na série?",
+      opcoes: ["Chrysalis", "Discórdia", "Rei Sombra", "Tirek"],
+      resposta: "Chrysalis"
+    },
+    {
+      pergunta: "Quem tornou o discórdia um mocinho?",
+      opcoes: ["Fluttershy", "Applejack", "Starlight", "Sunshine"],
+      resposta: "Fluttershy"
+    },
+    {
+      pergunta: "Quem destruiu o coração de cristal na sexta temporada?",
+      opcoes: ["Flurry Heart", "Rei Sombra", "Thorax", "Starlight"],
+      resposta: "Flurry Heart"
+    },
+    {
+      pergunta: "Quem derrotou a Cozy Glow?",
+      opcoes: ["Ela se rendeu", "Os alunos da Twilight", "Starlight", "Ela não foi derrotada"],
+      resposta: "Os alunos da Twilight"
+    },
+    {
+      pergunta: "Quem lutou contra Chrysalis na quinta temporada?",
+      opcoes: ["Celestia", "Starlight, Trixie e Thorax", "Zecora e sua tribo", "Twilight e suas amigas"],
+      resposta: "Zecora e sua tribo"
+    },
+    {
+      pergunta: "Qual cristal o Discórdia roubou?",
+      opcoes: ["Cristal da harmonia", "Cristal dos pôneis terrestres", "Cristal dos pegasus", "Cristal de chifre de unicórnio"],
+      resposta: "Cristal dos pegasus"
+    }
+  ]
+  var questoesaleatorias = [];
+  var itensaleatorios = [];
+
+  function aleatorizar(){
+    let vetorsuporte = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+    for(let x = vetorsuporte.length - 1; x >=0; x--){questoesaleatorias[x] = vetorsuporte.splice(Math.trunc(Math.random()*(x+1)), 1)}
+
+    let vetorsuporte2 = [0, 1, 2, 3];
+    for(let x = vetorsuporte2.length - 1; x >=0; x--){itensaleatorios[x] = vetorsuporte2.splice(Math.trunc(Math.random()*(x+1)), 1)}
+  }aleatorizar();
+
+  var questaoAtual = questoesaleatorias[0];
+  var suportequestoes = 0;
+  var score = 0;
+  var pode = true;
+  const audioacertou = new Audio("./sons/Som de resposta certa.mp3");
+  const audioerrou = new Audio("./sons/Som de resposta errada.mp3");
+  var escscore = document.querySelector(".score");
+  var pergunta = document.querySelector("h3");
+  var alternativas = document.querySelectorAll(".campo");
+
+  
+  //preencher com as perguntas e itens
+  function preencher() {
+    pergunta.textContent = questoes[questaoAtual]["pergunta"];
+    for (let x = 0; x <= 3; x++) {
+        alternativas[x].textContent = questoes[questaoAtual]["opcoes"][itensaleatorios[x]];
+    }
+  }
+  
+  //limpar as classes de acerto e erro
+  function limpar() {
+    alternativas.forEach(alternativa => {
+      alternativa.classList.remove("acertou");
+      alternativa.classList.remove("errou");
+    })
+  }
+
+  //clique e seus eventos
+  alternativas.forEach(alternativa => {
+    alternativa.addEventListener("click", function clicou() {
+      if (pode == true) {
+        if (alternativa.textContent == questoes[questaoAtual]["resposta"]) {
+          score += 50;
+          escscore.innerHTML = "Score: " + score;
+          alternativa.classList += " acertou";
+          audioacertou.play();
+        } else {
+          pode = false;
+          score > 0 ? score -= 25 : score = 0;
+          escscore.innerHTML = "Score: " + score;
+          alternativa.classList += " errou";
+          audioerrou.play();
+        }
+        pode = false;
+        suportequestoes += 1;
+        questaoAtual = questoesaleatorias[suportequestoes];
+        setTimeout(() => {
+          pode = true;
+          limpar();
+          preencher();
+        }, 2500);
+      }
+    })
+  })
+  
+  document.addEventListener("load", preencher());
+
+</script>

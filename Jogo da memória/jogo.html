@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo da memória</title>
+</head>
+
+<style>
+    @font-face {
+        font-family: god;
+        src: url(Fonte/godOfWar/GODOFWAR.TTF);
+    }
+
+    body {
+        font-family: god;
+        margin: 0px;
+        background-image: url(fundos/WallPaper1.png);
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+
+    .texto {
+        display: flex;
+        position: absolute;
+        height: 100%;
+        flex-direction: column;
+        width: fit-content;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        font-size: larger;
+        margin-left: 35px;
+    }
+
+    .container {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        justify-content: center;
+    }
+    
+    .cartas {
+        width: 900px;
+        height: 675px;
+        margin-right: 30px;
+        display: flex;
+        flex-wrap: wrap;
+        position: absolute;
+        justify-content: space-around;
+        align-items: center;
+        perspective: 2000px;
+        background-color: rgb(58, 55, 55);
+        border-radius: 5px;
+    }
+
+    .carta {
+        width: 200px;
+        height: 200px;
+        transform-style: preserve-3d;
+        position: relative;
+        transition: all 0.7s ease;
+        border-radius: 5px;
+    }
+
+    .frente {
+        height: 100%;
+        width: 100%;
+        position: absolute;
+        backface-visibility: hidden;
+    }
+
+    .atrás {
+        height: 100%;
+        width: 100%;
+        position: absolute;
+        background-image: none;
+        backface-visibility: hidden;
+        transform: rotateY(180deg);
+    }
+
+    .cartaFrente {
+        background-image: url(CartasFrente/ômega2Cortado.jpg);
+        background-size: contain;
+        border-radius: 5px;
+    }
+    
+    .carta1 :last-child {
+        background-image: url(CartasTrás/AresCortado.png);
+        background-size: contain;
+        border-radius: 5px;
+    }
+    
+    .carta2 :last-child {
+        background-image: url(CartasTrás/HadesCortado.jpg);
+        background-size: contain;
+        border-radius: 5px;
+    }
+    
+    .carta3 :last-child {
+        background-image: url(CartasTrás/HeliosCortado.jpg);
+        background-size: contain;
+        border-radius: 5px;
+    }
+    
+    .carta4 :last-child {
+        background-image: url(CartasTrás/HermesCortado.jpg);
+        background-size: contain;
+        border-radius: 5px;
+    }
+    
+    .carta5 :last-child {
+        background-image: url(CartasTrás/PoseidonCortado.png);
+        background-size: contain;
+        border-radius: 5px;
+    }
+    
+    .carta6 :last-child {
+        background-image: url(CartasTrás/ZeusCortado.png);
+        background-size: contain;
+        border-radius: 5px;
+    }
+
+    .virar {
+        transform: rotateY(180deg);
+    }
+
+    .acertado :last-child {
+        box-shadow: inset 9999px 9999px rgba(255, 0, 0, 0.652);
+    }
+</style>
+
+<body>
+    <audio src="sounds/soundTrack.mp3" id="musc" class="musica"></audio>
+    <div class="texto">
+        <h1 class="título">Jogo da memoria</h1>
+        <p class="Score">Deuses mortos: 0</p>
+        <p class="tries">Tentativas: 0</p>
+    </div>
+    <div class="container">
+        <div class="cartas">
+            <div class="carta">
+                <div class="frente"></div>
+                <div class="atrás"></div>
+            </div>
+            <div class="carta">
+                <div class="frente"></div>
+                <div class="atrás"></div>
+            </div>
+            <div class="carta">
+                <div class="frente"></div>
+                <div class="atrás"></div>
+            </div>
+            <div class="carta">
+                <div class="frente"></div>
+                <div class="atrás"></div>
+            </div>
+
+            <div class="carta">
+                <div class="frente"></div>
+                <div class="atrás"></div>
+            </div>
+            <div class="carta">
+                <div class="frente"></div>
+                <div class="atrás"></div>
+            </div>
+            <div class="carta">
+                <div class="frente"></div>
+                <div class="atrás"></div>
+            </div>
+            <div class="carta">
+                <div class="frente"></div>
+                <div class="atrás"></div>
+            </div>
+
+            <div class="carta">
+                <div class="frente"></div>
+                <div class="atrás"></div>
+            </div>
+            <div class="carta">
+                <div class="frente"></div>
+                <div class="atrás"></div>
+            </div>
+            <div class="carta">
+                <div class="frente"></div>
+                <div class="atrás"></div>
+            </div>
+            <div class="carta">
+                <div class="frente"></div>
+                <div class="atrás"></div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js" crossorigin="anonymous"></script>
+<script>
+    var cartas = document.querySelectorAll(".carta");
+
+    var vetorCartas = [];
+    var cliqueatual = 1;
+    var primeiracarta;
+    var segundacarta;
+    var score = 0;
+    var tentativas = 0;
+    var podeclicar = true;
+    const musicaFundo = new Audio("./sounds/soundTrack.mp3");
+    const somAcerto = new Audio("./sounds/somAcerto.mp3");
+    
+    document.addEventListener("DOMContentLoaded", function embaralharepreencher() {
+        let vetorSuporte = [1, 2, 3, 4, 5, 6, 1, 2, 3, 4, 5, 6,];
+        for (let x = vetorSuporte.length - 1; x >= 0; x--) {
+            vetorCartas[x] = vetorSuporte.splice(Math.trunc(Math.random() * (x + 1)), 1);
+        }
+        let variavelSuporte = 0;
+        cartas.forEach(carta => {
+            carta.classList.add("cartaFrente");
+        })
+        cartas.forEach(carta => {
+            carta.classList.add("carta" + vetorCartas[variavelSuporte]);
+            variavelSuporte += 1;
+        })
+    })
+
+
+    cartas.forEach(carta => {
+        carta.addEventListener("click", function clicou() {
+            if (podeclicar == true && this.classList.contains("acertado") == false) {
+                if (cliqueatual == 1) {
+                    this.classList.add("virar");
+                    primeiracarta = this;
+                    cliqueatual = 2;
+                    primeiracarta.className += " clicado";
+                }
+                else if (cliqueatual == 2 && this.classList.contains("acertado") == false && this.classList.contains("clicado") == false) {
+                    this.classList.add("virar");
+                    segundacarta = this;
+                    cliqueatual = 1;
+                    podeclicar = false;
+                    primeiracarta.classList.remove("clicado");
+                    if (primeiracarta.classList.value == segundacarta.classList.value) {
+                        setTimeout(() => {
+                            score += 1;
+                            $(".Score").html("Deuses mortos: " + score);
+                            primeiracarta.classList.add("acertado");
+                            segundacarta.classList.add("acertado");
+                            podeclicar = true;
+                            somAcerto.play();
+                        }, 750);
+                    } else if (primeiracarta.classList.value != segundacarta.classList.value) {
+                        setTimeout(() => {
+                            tentativas +=1;
+                            $(".tries").html("Tentativas: " + tentativas);
+                            primeiracarta.classList.remove("virar");
+                            segundacarta.classList.remove("virar");
+                            podeclicar = true;
+                        }, 750);
+                    }
+                }
+            }
+        })
+    })
+</script>
